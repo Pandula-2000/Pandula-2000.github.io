@@ -1,41 +1,38 @@
 ---
-title: "Agent Based Modeling(ABM)"
+title: "Agent Based Modeling (ABM)"
 excerpt: "A research of Modeling human behaviour and Social Systems <br/><br/><img src='/images/ABM_poster.jpg'>"
 collection: projects
 ---
-
-
 
 <div style="font-size: 1.0rem; line-height: 1.6;">
 
 <!-- 1. OVERVIEW -->
 <h2>1. Overview</h2>
+
 <p>
-Agent-Based Modeling (ABM) is a powerful computational approach where individual entities 
-(<em>agents</em>) interact within a dynamic environment. These interactions shape the emergent 
-behaviour of the whole system, enabling simulation of complex social, biological, and 
-behavioural processes that cannot be captured with traditional equation-based models.
+Agent-Based Modeling (ABM) is a powerful computational approach where individual entities
+(<em>agents</em>) interact within a dynamic environment. These interactions collectively produce
+emergent behaviour that cannot be reproduced using traditional equation-based models.
 </p>
 
 <p>
-My work in ABM focuses on integrating <strong>real-world human mobility data</strong>, 
-<strong>AI-driven behavioural clustering</strong>, and <strong>stochastic simulation</strong> to model public 
-health systems—particularly airborne diseases (COVID-19) and vector-borne diseases (dengue).
+My work in ABM focuses on combining <strong>real-world human mobility traces</strong>,
+<strong>AI-driven behavioural clustering</strong>, and <strong>stochastic simulation</strong> to model airborne
+(COVID-19) and vector-borne (dengue) diseases with high behavioural realism.
 </p>
 
 <hr/>
 
-<!-- 2. VISUAL OVERVIEW -->
-<h2>2. Project Poster (Visual Overview)</h2>
+<!-- 2. PROJECT POSTER -->
+<h2>2. Project Poster</h2>
 
 <p align="center">
-  <img src="/images/ABM_poster.jpg" alt="ABM Poster" 
-       style="max-width: 85%; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-top: 10px;">
+  <img src="/images/ABM_poster.jpg" alt="ABM Poster"
+       style="max-width: 85%; border-radius: 10px; margin-top: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
 </p>
 
 <p style="text-align:center; font-size:0.9rem;">
-Figure: Overview of the agent-based simulation pipeline including mobility clustering, 
-environmental patches, disease transmission, and intervention analysis.
+Primary graphical overview of the AVSim simulation system.
 </p>
 
 <hr/>
@@ -44,12 +41,12 @@ environmental patches, disease transmission, and intervention analysis.
 <h2>3. Key Features of the Project</h2>
 
 <ul>
-  <li><strong>Real-world GPS mobility modeling</strong> from 100+ voluntary participants.</li>
-  <li>Use of <strong>Spectral Clustering</strong> and <strong>DBSCAN</strong> to identify behavioural patterns.</li>
-  <li>Simulation of <strong>COVID-19</strong> and <strong>dengue</strong> at high spatial and behavioural fidelity.</li>
-  <li><strong>Transportation-aware disease spread</strong> across buses, public transit, and crowded hubs.</li>
-  <li>Evaluation of <strong>quarantine</strong>, <strong>vaccination</strong>, and <strong>vector-control</strong> policies.</li>
-  <li><strong>Hybrid integration</strong> with SEIR compartment models for robust epidemiological accuracy.</li>
+  <li><strong>Real-world GPS mobility modeling</strong> from more than 100 human participants.</li>
+  <li>Behavioural extraction using <strong>DBSCAN</strong> and <strong>Spectral Clustering</strong>.</li>
+  <li>High-fidelity simulation of <strong>COVID-19</strong> and <strong>dengue</strong>.</li>
+  <li><strong>Transportation-aware exposure modeling</strong> (buses, shared mobility).</li>
+  <li>Policy evaluation: quarantine, vaccination, social distancing, hotspot elimination.</li>
+  <li><strong>Hybrid ABM + SEIR framework</strong> for epidemiological accuracy.</li>
 </ul>
 
 <hr/>
@@ -57,51 +54,52 @@ environmental patches, disease transmission, and intervention analysis.
 <!-- 4. TECHNICAL HIGHLIGHTS -->
 <h2>4. Technical Highlights</h2>
 
-<p>The AVSim framework incorporates:</p>
-
 <ul>
-  <li><strong>State-machine models</strong> for daily human activity patterns.</li>
-  <li><strong>Graph-theoretic contact networks</strong> for exposure modeling.</li>
-  <li><strong>Patch-based vector ecology</strong> for mosquito population dynamics (temperature, rainfall, humidity).</li>
-  <li><strong>Probabilistic transmission models</strong> for airborne and vector-borne infections.</li>
-  <li>AI-driven behavioural clustering to infer mobility and contact subtypes.</li>
+  <li><strong>State-machine models</strong> for occupational daily routines.</li>
+  <li><strong>Graph-theoretic contact modeling</strong> for exposure estimation.</li>
+  <li><strong>Patch-based vector population modeling</strong> for dengue (temperature, humidity, rainfall).</li>
+  <li><strong>Probabilistic transmission</strong> for airborne and vector-borne infection.</li>
+  <li>AI-based identification of mobility clusters and risk zones.</li>
 </ul>
 
 <hr/>
 
-<!-- 5. RESOURCES -->
-<h2>5. Resources</h2>
+<!-- 5. PROJECT POSTER (SECOND INSTANCE) -->
+<h2>5. Project Poster</h2>
+
+<p align="center">
+  <img src="/images/ABM_poster.jpg" alt="ABM Poster (Duplicate)"
+       style="max-width: 85%; border-radius: 10px; margin-top: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+</p>
+
+<p style="text-align:center; font-size:0.9rem;">
+Second visual reference for the AVSim model.
+</p>
+
+<hr/>
+
+<!-- 6. RESOURCES -->
+<h2>6. Resources</h2>
 
 <ul>
 
-  
-
-
-  <!-- 5.1 JOURNAL PAPER -->
+  <!-- PAPER -->
   <li>
-    <strong>Under review Journal Paper(Submitted to IEEE Transactions on SMC):</strong> 
+    <strong>Paper:</strong>
     <a href="https://arxiv.org/abs/2502.06212" target="_blank" rel="noopener noreferrer">
       AVSim – ArXiv Preprint
     </a>
   </li>
 
-   <!-- 5.1 CONF. PAPER -->
+  <!-- DATASET -->
   <li>
-    <strong>Published Conference Paper:</strong> 
-    <a href="https://ieeexplore.ieee.org/document/10851006" target="_blank" rel="noopener noreferrer">
-      Unveiling Motion Patterns through Unsupervised Clustering
-    </a>
-  </li>
-
-  <!-- 5.2 DATASET -->
-  <li>
-    <strong>Human Mobility Dataset:</strong>
+    <strong>Dataset:</strong>
     <a href="https://doi.org/10.5281/zenodo.13621863" target="_blank" rel="noopener noreferrer">
-      Zenodo Mobility Dataset
+      Zenodo GPS Mobility Dataset
     </a>
   </li>
 
-  <!-- 5.3 CODE -->
+  <!-- CODE -->
   <li>
     <strong>GitHub Code:</strong>
     <a href="https://github.com/Pandula-2000/AVSim" target="_blank" rel="noopener noreferrer">
@@ -109,8 +107,14 @@ environmental patches, disease transmission, and intervention analysis.
     </a>
   </li>
 
+  <!-- FULL REPORT -->
+  <li>
+    <strong>Full Project Report:</strong>
+    <a href="/files/EE_406_Report_G13.pdf" target="_blank" rel="noopener noreferrer">
+      EE406 Final Project Report (PDF)
+    </a>
+  </li>
+
 </ul>
 
 </div>
-
-
