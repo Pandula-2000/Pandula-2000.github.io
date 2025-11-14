@@ -7,6 +7,6 @@ author_profile: true
 
 <a href="/files/CV_Pandula.pdf" target="_blank" rel="noopener noreferrer">
   <button style="padding:10px 20px; font-size:16px; border-radius:8px;">
-    Download Full CV (PDF)
+    View Full CV (PDF)
   </button>
 </a>
