@@ -8,92 +8,98 @@ collection: projects
 
 <div style="font-size: 1.1rem; line-height: 1.6;">
 
-## 1. Overview
+<!-- 1. OVERVIEW -->
+<h2>1. Overview</h2>
+<p>
+Agent-Based Modeling (ABM) is a powerful computational approach where individual entities 
+(<em>agents</em>) interact within a dynamic environment. These interactions shape the emergent 
+behaviour of the whole system, enabling simulation of complex social, biological, and 
+behavioural processes that cannot be captured with traditional equation-based models.
+</p>
 
-**AVSim** is a high-resolution **agent-based modeling (ABM)** framework designed to simulate the spread of **airborne** and **vector-borne** diseases by integrating **real-world GPS mobility data**, **behavioural clustering**, and **transportation models**.
+<p>
+My work in ABM focuses on integrating <strong>real-world human mobility data</strong>, 
+<strong>AI-driven behavioural clustering</strong>, and <strong>stochastic simulation</strong> to model public 
+health systems—particularly airborne diseases (COVID-19) and vector-borne diseases (dengue).
+</p>
 
-Unlike traditional compartment models, AVSim captures:
+<hr/>
 
-- Individual-level mobility and behaviours  
-- Social mixing patterns across occupations  
-- Transportation-driven exposure  
-- Vector ecology (for dengue)  
-- Policy interventions and environmental diversity  
-
-The system enables detailed epidemiological analysis and policy evaluation under realistic behavioural dynamics.
-
----
-
-## 2. Project Poster (Visual Overview)
+<!-- 2. VISUAL OVERVIEW -->
+<h2>2. Project Poster (Visual Overview)</h2>
 
 <p align="center">
-  <img src="/images/ABM_poster.jpg" alt="ABM Project Poster" 
+  <img src="/images/ABM_poster.jpg" alt="ABM Poster" 
        style="max-width: 85%; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); margin-top: 10px;">
 </p>
 
-<p style="text-align:center; font-size:0.85rem;">
-Figure: Overview of AVSim pipeline including mobility clustering, environmental patches, 
-contact modelling, and infection spread simulation.
+<p style="text-align:center; font-size:0.9rem;">
+Figure: Overview of the agent-based simulation pipeline including mobility clustering, 
+environmental patches, disease transmission, and intervention analysis.
 </p>
 
----
+<hr/>
 
-## 3. Key Features of the Project
+<!-- 3. KEY FEATURES -->
+<h2>3. Key Features of the Project</h2>
 
-### **🔹 Real-World Mobility Modeling**
-- GPS-based movement traces from participants
-- Clustering using **DBSCAN** and **Spectral Clustering**
-- Probabilistic mobility matrices for realistic transitions
+<ul>
+  <li><strong>Real-world GPS mobility modeling</strong> from 100+ voluntary participants.</li>
+  <li>Use of <strong>Spectral Clustering</strong> and <strong>DBSCAN</strong> to identify behavioural patterns.</li>
+  <li>Simulation of <strong>COVID-19</strong> and <strong>dengue</strong> at high spatial and behavioural fidelity.</li>
+  <li><strong>Transportation-aware disease spread</strong> across buses, public transit, and crowded hubs.</li>
+  <li>Evaluation of <strong>quarantine</strong>, <strong>vaccination</strong>, and <strong>vector-control</strong> policies.</li>
+  <li><strong>Hybrid integration</strong> with SEIR compartment models for robust epidemiological accuracy.</li>
+</ul>
 
-### **🔹 Airborne Disease Simulation**
-- Close-contact transmission  
-- Quarantine & isolation  
-- Vaccination rollout  
-- Testing & contact tracing  
+<hr/>
 
-### **🔹 Vector-Borne Disease Simulation**
-- Temperature & humidity-driven mosquito population  
-- Patch-based vector ecology  
-- Interventions such as fogging and hotspot elimination  
+<!-- 4. TECHNICAL HIGHLIGHTS -->
+<h2>4. Technical Highlights</h2>
 
-### **🔹 Transportation-Aware Spread**
-- Bus, public transport, shared mobility, and crowding effects  
-- Exposure risk modeling within transit networks  
+<p>The AVSim framework incorporates:</p>
 
-### **🔹 Policy Evaluation Capabilities**
-- School/workplace closure  
-- Social distancing  
-- Vaccination strategies  
-- Vector-control campaigns  
+<ul>
+  <li><strong>State-machine models</strong> for daily human activity patterns.</li>
+  <li><strong>Graph-theoretic contact networks</strong> for exposure modeling.</li>
+  <li><strong>Patch-based vector ecology</strong> for mosquito population dynamics (temperature, rainfall, humidity).</li>
+  <li><strong>Probabilistic transmission models</strong> for airborne and vector-borne infections.</li>
+  <li>AI-driven behavioural clustering to infer mobility and contact subtypes.</li>
+</ul>
 
----
+<hr/>
 
-## 4. Technical Highlights
+<!-- 5. RESOURCES -->
+<h2>5. Resources</h2>
 
-- **State-machine based human activity modeling**  
-  (home → work → travel → leisure → return)
+<ul>
 
-- **Graph-theoretic representation** of human contact networks  
+  <!-- 5.1 PAPER -->
+  <li>
+    <strong>5.1 Paper:</strong> 
+    <a href="https://arxiv.org/abs/2502.06212" target="_blank" rel="noopener noreferrer">
+      AVSim – ArXiv Preprint
+    </a>
+  </li>
 
-- **Hybrid SEIR + ABM model** for epidemiological fidelity  
+  <!-- 5.2 DATASET -->
+  <li>
+    <strong>5.2 Dataset:</strong>
+    <a href="https://doi.org/10.5281/zenodo.13621863" target="_blank" rel="noopener noreferrer">
+      Zenodo Mobility Dataset
+    </a>
+  </li>
 
-- **Patch-based environmental modeling** for vector habitats  
+  <!-- 5.3 CODE -->
+  <li>
+    <strong>5.3 GitHub Code:</strong>
+    <a href="https://github.com/Pandula-2000/AVSim" target="_blank" rel="noopener noreferrer">
+      AVSim Repository
+    </a>
+  </li>
 
-- **Monte-Carlo simulation engine** for robust scenario evaluation  
+</ul>
 
-- **Integration of AI methods** for behaviour extraction and risk estimation  
+</div>
 
----
 
-## 5. Resources
-
-### **5.1 Research Paper**
-📄 <a href="https://arxiv.org/abs/2502.06212" target="_blank" rel="noopener noreferrer"><strong>AVSim ArXiv Paper</strong></a>
-
-### **5.2 Dataset**
-🗂 <a href="https://doi.org/10.5281/zenodo.13621863" target="_blank" rel="noopener noreferrer"><strong>Zenodo Dataset (GPS + metadata)</strong></a>
-
-### **5.3 Source Code**
-💻 <a href="https://github.com/Pandula-2000/AVSim" target="_blank" rel="noopener noreferrer"><strong>GitHub Repository</strong></a>
-
----
