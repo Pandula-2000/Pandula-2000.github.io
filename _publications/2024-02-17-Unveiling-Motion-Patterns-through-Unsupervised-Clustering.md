@@ -2,7 +2,7 @@
 title: "Unveiling Motion Patterns through Unsupervised Clustering"
 collection: publication
 category: conferences
-permalink: /publication/"Unveiling-Motion-Patterns-through-Unsupervised-Clustering"
+permalink: /publication/"2024-02-17-Unveiling-Motion-Patterns-through-Unsupervised-Clustering"
 excerpt: 'This paper is about fixing template issue #693.'
 date: 2024-02-17
 venue: 'GitHub Journal of Bugs'
