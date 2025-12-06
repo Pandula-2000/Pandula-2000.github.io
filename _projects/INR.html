@@ -3,3 +3,397 @@ title: "IMPLICIT NEURAL REPRESENTATIONS"
 excerpt: "A deep study of spectral characteristics of INRs <br/><img src='/images/INR_cover.png'>"
 collection: projects
 ---
+
+<div class="bandrc-page">
+  <header class="bandrc-header">
+    <h1>BandRC: Band Shifted Raised Cosine Activated Implicit Neural Representations</h1>
+
+    <p class="bandrc-subtitle">
+      A raised-cosine-based activation with learnable bandwidth and band-shift, guided by prior-knowledge embeddings,
+      for high-quality implicit neural representations.
+    </p>
+
+    <p class="bandrc-authors">
+      Pandula Thennakoon · Avishka Ranasinghe · Mario De Silva · Buwaneka Epakanda ·
+      Roshan Godaliyadda · Parakrama Ekanayake · Vijitha Herath
+    </p>
+
+    <div class="bandrc-links">
+      <!-- Update these links to the real URLs -->
+      <a href="#" target="_blank" rel="noreferrer">Paper (arXiv)</a>
+      <a href="#" target="_blank" rel="noreferrer">Code</a>
+      <a href="#bibtex">Cite</a>
+    </div>
+  </header>
+
+  <section id="abstract" class="bandrc-section">
+    <h2>1. Overview</h2>
+    <p>
+      BandRC introduces a <strong>Band Shifted Raised Cosine</strong> activation for implicit neural representations (INRs),
+      designed to mitigate spectral bias, improve robustness to noise, and better capture both local and global
+      structures in signals. The activation is the impulse response of a frequency-shifted raised cosine filter with
+      learnable bandwidth <em>T</em> and shift <em>ζ</em>, combined with a prior-knowledge embedding that adapts these
+      parameters to the signal at hand.
+    </p>
+    <p>
+      Built on a 5-layer MLP with 256 neurons per layer and four BandRC-activated layers, the method is evaluated on
+      image reconstruction, denoising, single-image super-resolution, inpainting, and 3D occupancy fields, consistently
+      outperforming contemporary INR activations such as ReLU+PE, SIREN, WIRE, and INCODE.
+    </p>
+  </section>
+
+  <section id="method" class="bandrc-section">
+    <h2>2. Method</h2>
+
+    <h3>2.1 BandRC Activation</h3>
+    <p>
+      The activation is derived as the impulse response of a <strong>shifted raised cosine filter</strong>. For input
+      <em>x</em>, the BandRC activation is
+    </p>
+    <pre class="bandrc-code">
+φ(x) = (1/T) · sinc(x / T) ·
+       cos(π β x / T) / (1 − (2 β x / T)²) · exp(2π j ζ x)</pre>
+    <ul>
+      <li><strong>β</strong> (roll-off rate) is fixed (e.g., β = 0.05) for stability.</li>
+      <li><strong>T</strong> (bandwidth) and <strong>ζ</strong> (frequency shift) are learnable and adapt per task.</li>
+      <li>Intermediate representations are complex-valued; the real part is taken at the output layer.</li>
+    </ul>
+
+    <h3>2.2 Prior-Knowledge Embedding</h3>
+    <p>
+      BandRC follows the INCODE-style conditioning strategy: a task-specific encoder extracts <strong>prior
+      knowledge</strong> from the input signal, which is then used to control the activation parameters.
+    </p>
+    <ul>
+      <li>
+        <strong>Image tasks:</strong> truncated ResNet-34 (ImageNet-pretrained) up to the 5th layer, followed by
+        global average pooling and a small MLP to produce a latent code.
+      </li>
+      <li>
+        <strong>3D occupancy fields:</strong> truncated ResNet3D-18 to encode volumetric structure into a latent code.
+      </li>
+      <li>
+        The latent code is passed through a harmonizer network (linear layers + SiLU) to generate raw parameters
+        <code>ĥT, ĥζ</code> per activation.
+      </li>
+    </ul>
+    <p>
+      Parameters are constrained to stable ranges via a sigmoid-based projection:
+    </p>
+    <pre class="bandrc-code">
+θ = a + (b − a) · sigmoid(θ̂),  where θ ∈ {T, ζ}</pre>
+    <p>
+      This removes manual tuning, keeps BandRC parameters within meaningful bounds, and makes the INR
+      <strong>signal-adaptive</strong>.
+    </p>
+
+    <h3>2.3 Spectral Bias & Chebyshev Analysis</h3>
+    <p>
+      Using harmonic distortion and Chebyshev polynomial analyses, BandRC is shown to maintain stronger,
+      more stable coefficients over a wider range of polynomial degrees than sinusoidal or Gaussian nonlinearities,
+      implying better <strong>high-frequency support</strong>.
+    </p>
+    <ul>
+      <li>
+        Chebyshev expansions on <em>[-5, 5]</em> show Raised Cosine coefficients stay significant up to ~20 orders,
+        while Sine and Gaussian decay much faster.
+      </li>
+      <li>
+        Chirp-image experiments confirm lower spectral error across frequencies and stronger high-frequency energy in
+        deeper layers compared to SIREN.
+      </li>
+    </ul>
+  </section>
+
+  <section id="results" class="bandrc-section">
+    <h2>3. Experiments &amp; Results</h2>
+
+    <h3>3.1 Image Reconstruction (Kodak)</h3>
+    <ul>
+      <li>
+        Dataset: Kodak 24 lossless images, native resolution.
+      </li>
+      <li>
+        Average PSNR: <strong>BandRC 41.24 dB</strong> vs. <strong>INCODE 35.57 dB</strong>, ReLU+PE 32.79 dB,
+        SIREN 33.09 dB, WIRE 29.41 dB.
+      </li>
+      <li>
+        On Kodak image 20, BandRC improves over INCODE by +8.93 dB and over WIRE / SIREN by more than +12 dB,
+        while converging faster and more stably.
+      </li>
+    </ul>
+
+    <!-- Placeholder: Kodak reconstruction comparison -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_kodak_recon.png' | relative_url }}"
+        alt="BandRC compared to ReLU+PE, SIREN, WIRE, and INCODE on Kodak image 20"
+      />
+      <p class="bandrc-figcaption">
+        Figure: Qualitative comparison on Kodak image 20 – BandRC vs. existing INR activations.
+      </p>
+    </div>
+
+    <h3>3.2 Image Denoising (DIV2K)</h3>
+    <ul>
+      <li>Noise model: photon noise (Poisson, mean count 30) + readout noise (std = 2).</li>
+      <li>
+        BandRC achieves a <strong>+0.46 dB</strong> PSNR gain over INCODE, with better color preservation and structural
+        integrity in reconstructions.
+      </li>
+    </ul>
+
+    <!-- Placeholder: denoising visual -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_denoising.png' | relative_url }}"
+        alt="Denoising examples on DIV2K with BandRC and baselines"
+      />
+      <p class="bandrc-figcaption">
+        Figure: Denoising on DIV2K – BandRC vs. baselines under photon + readout noise.
+      </p>
+    </div>
+
+    <h3>3.3 Single-Image Super-Resolution</h3>
+    <p>On DIV2K, BandRC is evaluated at 2×, 4×, and 6× super-resolution:</p>
+    <table class="bandrc-table">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>2× PSNR</th>
+          <th>4× PSNR</th>
+          <th>6× PSNR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>ReLU+PE</td><td>32.80</td><td>28.89</td><td>26.29</td></tr>
+        <tr><td>SIREN</td><td>32.26</td><td>29.62</td><td>27.31</td></tr>
+        <tr><td>WIRE</td><td>29.02</td><td>27.16</td><td>25.35</td></tr>
+        <tr><td>INCODE</td><td>32.83</td><td>29.96</td><td>26.63</td></tr>
+        <tr><td><strong>BandRC</strong></td><td><strong>34.03</strong></td><td><strong>30.42</strong></td><td><strong>27.66</strong></td></tr>
+      </tbody>
+    </table>
+    <p>
+      Qualitatively, BandRC produces sharper details (e.g., butterfly wings) and cleaner backgrounds, especially in
+      the challenging 6× setting.
+    </p>
+
+    <!-- Placeholder: SR visual -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_sr_results.png' | relative_url }}"
+        alt="Super-resolution examples for 2×, 4×, and 6× with BandRC"
+      />
+      <p class="bandrc-figcaption">
+        Figure: Super-resolution results for 2×, 4×, and 6× – BandRC retains high-frequency details better than baselines.
+      </p>
+    </div>
+
+    <h3>3.4 Inpainting &amp; 3D Occupancy Fields</h3>
+    <ul>
+      <li>
+        <strong>Inpainting:</strong> Celtic spiral knots image (572×582), with only 20% pixels observed.
+        BandRC reconstructs continuous knot structures with higher PSNR and competitive SSIM, capturing sparse
+        patterns more reliably than SIREN, WIRE, and INCODE.
+      </li>
+      <li>
+        <strong>Occupancy fields:</strong> Thai statue on a 512³ grid.
+        BandRC attains IOU = <strong>0.992</strong>, slightly surpassing INCODE (0.991) and clearly outperforming ReLU+PE,
+        SIREN, and WIRE.
+      </li>
+    </ul>
+
+    <!-- Placeholder: Inpainting visual -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_inpainting.png' | relative_url }}"
+        alt="Inpainting of Celtic spiral knots using BandRC and baselines"
+      />
+      <p class="bandrc-figcaption">
+        Figure: Inpainting of Celtic spiral knots with 20% pixels observed – BandRC recovers continuous structures.
+      </p>
+    </div>
+
+    <!-- Placeholder: 3D occupancy visual -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_occupancy.png' | relative_url }}"
+        alt="3D occupancy reconstruction for Thai statue using BandRC"
+      />
+      <p class="bandrc-figcaption">
+        Figure: 3D occupancy reconstruction of the Thai statue – BandRC produces clean, high-IOU surfaces.
+      </p>
+    </div>
+  </section>
+
+  <section id="architecture" class="bandrc-section">
+    <h2>4. Architecture &amp; Training</h2>
+    <ul>
+      <li>
+        Default INR: 5-layer MLP, 256 neurons per hidden layer, BandRC activations on 4 hidden layers, optional sigmoid
+        on the output depending on the task.
+      </li>
+      <li>
+        Optimization: Adam; learning rate tuned per task (e.g., 0.01 for 2D reconstruction, smaller for deeper / larger
+        models).
+      </li>
+      <li>
+        Hardware: experiments run on NVIDIA Quadro GV100 (32 GB) using PyTorch.
+      </li>
+    </ul>
+    <p>
+      A width–depth ablation (Kodak image 22) shows PSNR rising with capacity, up to ~52 dB for width = 512, depth = 4
+      (1000 epochs). A practical configuration with width = 256, depth = 3 still reaches ~39.6 dB while being more
+      efficient.
+    </p>
+
+    <!-- Placeholder: architecture diagram -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_architecture.png' | relative_url }}"
+        alt="Overall BandRC architecture: prior encoder, harmonizer, and INR MLP"
+      />
+      <p class="bandrc-figcaption">
+        Figure: BandRC architecture – prior-knowledge encoder, harmonizer for T and ζ, and the main INR network.
+      </p>
+    </div>
+
+    <!-- Placeholder: width–depth ablation plot -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/bandrc_ablation.png' | relative_url }}"
+        alt="Width–depth ablation plot for BandRC on Kodak image 22"
+      />
+      <p class="bandrc-figcaption">
+        Figure: Width–depth ablation on Kodak image 22 – PSNR vs. model capacity for BandRC.
+      </p>
+    </div>
+  </section>
+
+  <section id="resources" class="bandrc-section">
+    <!-- 6. RESOURCES -->
+    <h2>6. Resources</h2>
+    <!-- You can add list items here as needed, but keep the heading and comment unchanged -->
+  </section>
+
+  <section id="bibtex" class="bandrc-section">
+    <h2>7. BibTeX</h2>
+    <p>Update the metadata once the final venue and details are fixed:</p>
+    <pre class="bandrc-code">
+@article{thennakoon2025bandrc,
+  title   = {BandRC: Band Shifted Raised Cosine Activated Implicit Neural Representations},
+  author  = {Thennakoon, Pandula and Ranasinghe, Avishka and De Silva, Mario and
+             Epakanda, Buwaneka and Godaliyadda, Roshan and Ekanayake, Parakrama
+             and Herath, Vijitha},
+  journal = {arXiv preprint arXiv:2505.11640},
+  year    = {2025}
+}</pre>
+  </section>
+</div>
+
+<style>
+  .bandrc-page {
+    width: min(1280px, 100% - 3rem);
+    margin: 0 auto 3rem auto;
+  }
+
+  .bandrc-header {
+    margin-bottom: 2rem;
+  }
+
+  .bandrc-header h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .bandrc-subtitle {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .bandrc-authors {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .bandrc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bandrc-links a {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .bandrc-section {
+    margin: 1.5rem 0;
+  }
+
+  .bandrc-section h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .bandrc-section h3 {
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .bandrc-section p {
+    margin-bottom: 0.5rem;
+  }
+
+  .bandrc-section ul {
+    margin: 0 0 0.5rem 1.1rem;
+  }
+
+  .bandrc-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+    margin: 0.35rem 0 0.6rem 0;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    border: 1px solid rgba(128, 128, 128, 0.4);
+  }
+
+  .bandrc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 0.4rem 0 0.8rem 0;
+  }
+
+  .bandrc-table th,
+  .bandrc-table td {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+  }
+
+  .bandrc-table th {
+    font-weight: 600;
+  }
+
+  .bandrc-figure {
+    margin: 1rem 0 1.5rem 0;
+    text-align: center;
+  }
+
+  .bandrc-figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.35rem;
+  }
+
+  .bandrc-figcaption {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    opacity: 0.85;
+  }
+</style>
