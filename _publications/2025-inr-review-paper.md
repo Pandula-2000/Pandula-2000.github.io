@@ -2,8 +2,8 @@
 title: " From Samples to Functions: Implicit Neural Representations for Continuous Modeling"
 collection: publications
 category: conferences
-permalink: /publication/2025-BandRC
-excerpt: 'Accepted at ICIIS 2025'
+permalink: /publication/2025-inr-review-paper
+# excerpt: 'Accepted at ICIIS 2025'
 date: 2025-12-30
 venue: 'ICIIS'
 # paperurl: ''
