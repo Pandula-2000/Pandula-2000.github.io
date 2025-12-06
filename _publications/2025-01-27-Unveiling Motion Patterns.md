@@ -2,7 +2,7 @@
 title: "Unveiling Motion Patterns through Unsupervised Clustering"
 collection: publications
 category: conferences
-permalink: /publication/2025-01-27-Unveiling Motion Patterns through Unsupervised Clustering
+permalink: /publication/2025-01-27-Unveiling Motion Patterns
 excerpt: ''
 date: 2025-01-27
 venue: 'ICAC'
