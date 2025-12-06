@@ -6,11 +6,11 @@ collection: projects
 
 <div class="bandrc-page">
   <header class="bandrc-header">
-    <h1>BandRC: Band Shifted Raised Cosine Activated Implicit Neural Representations</h1>
+    <h1>Implicit Neural Representations &amp; Band-Shifted Raised Cosine Activations</h1>
 
     <p class="bandrc-subtitle">
-      A raised-cosine-based activation with learnable bandwidth and band-shift, guided by prior-knowledge embeddings,
-      for high-quality implicit neural representations.
+      Understanding implicit neural representations (INRs), the role of activations in their spectral behavior, and our
+      contribution based on a band-shifted raised cosine activation with task-adaptive parameters.
     </p>
 
     <p class="bandrc-authors">
@@ -26,136 +26,244 @@ collection: projects
     </div>
   </header>
 
-  <section id="abstract" class="bandrc-section">
-    <h2>1. Overview</h2>
+  <!-- 1. What is an INR? -->
+  <section id="what-is-inr" class="bandrc-section">
+    <h2>1. What is an INR?</h2>
     <p>
-      BandRC introduces a <strong>Band Shifted Raised Cosine</strong> activation for implicit neural representations (INRs),
-      designed to mitigate spectral bias, improve robustness to noise, and better capture both local and global
-      structures in signals. The activation is the impulse response of a frequency-shifted raised cosine filter with
-      learnable bandwidth <em>T</em> and shift <em>ζ</em>, combined with a prior-knowledge embedding that adapts these
-      parameters to the signal at hand.
+      An <strong>Implicit Neural Representation (INR)</strong> models a signal as a continuous function
+      <em>f<sub>θ</sub>: ℝ<sup>d</sup> → ℝ<sup>k</sup></em>, parameterized by a neural network. Instead of storing
+      discrete samples (pixels, voxels, etc.), an INR learns a mapping from a coordinate
+      (e.g. (x, y) in an image, (x, y, z) in a 3D volume) directly to the corresponding signal value (e.g. RGB intensity
+      or occupancy).
     </p>
     <p>
-      Built on a 5-layer MLP with 256 neurons per layer and four BandRC-activated layers, the method is evaluated on
-      image reconstruction, denoising, single-image super-resolution, inpainting, and 3D occupancy fields, consistently
-      outperforming contemporary INR activations such as ReLU+PE, SIREN, WIRE, and INCODE.
+      Typical examples include:
+    </p>
+    <ul>
+      <li>2D images as functions from spatial coordinates to RGB values.</li>
+      <li>3D shapes as occupancy or signed distance fields.</li>
+      <li>Videos, audio, and other continuous signals represented in a coordinate domain.</li>
+    </ul>
+    <p>
+      Concretely, an INR is usually implemented as a multi-layer perceptron (MLP) with a chosen activation function,
+      trained to minimize the reconstruction error between predicted and ground-truth signal values at sampled
+      coordinates.
     </p>
   </section>
 
-  <section id="method" class="bandrc-section">
-    <h2>2. Method</h2>
-
-    <h3>2.1 BandRC Activation</h3>
+  <!-- 2. Why INRs? -->
+  <section id="why-inr" class="bandrc-section">
+    <h2>2. Why INRs?</h2>
     <p>
-      The activation is derived as the impulse response of a <strong>shifted raised cosine filter</strong>. For input
-      <em>x</em>, the BandRC activation is
-    </p>
-    <pre class="bandrc-code">
-φ(x) = (1/T) · sinc(x / T) ·
-       cos(π β x / T) / (1 − (2 β x / T)²) · exp(2π j ζ x)</pre>
-    <ul>
-      <li><strong>β</strong> (roll-off rate) is fixed (e.g., β = 0.05) for stability.</li>
-      <li><strong>T</strong> (bandwidth) and <strong>ζ</strong> (frequency shift) are learnable and adapt per task.</li>
-      <li>Intermediate representations are complex-valued; the real part is taken at the output layer.</li>
-    </ul>
-
-    <h3>2.2 Prior-Knowledge Embedding</h3>
-    <p>
-      BandRC follows the INCODE-style conditioning strategy: a task-specific encoder extracts <strong>prior
-      knowledge</strong> from the input signal, which is then used to control the activation parameters.
+      INRs have emerged as powerful representations in vision, graphics, and signal processing due to several
+      advantages:
     </p>
     <ul>
       <li>
-        <strong>Image tasks:</strong> truncated ResNet-34 (ImageNet-pretrained) up to the 5th layer, followed by
-        global average pooling and a small MLP to produce a latent code.
+        <strong>Continuous &amp; resolution-agnostic.</strong> Once trained, the network can be evaluated at arbitrary
+        coordinates, enabling super-resolution and smooth interpolation without retraining.
       </li>
       <li>
-        <strong>3D occupancy fields:</strong> truncated ResNet3D-18 to encode volumetric structure into a latent code.
+        <strong>Memory efficiency.</strong> Instead of storing large arrays, the signal is compressed into the network
+        parameters.
       </li>
       <li>
-        The latent code is passed through a harmonizer network (linear layers + SiLU) to generate raw parameters
-        <code>ĥT, ĥζ</code> per activation.
+        <strong>Built-in regularization.</strong> The MLP architecture acts as a prior, often favoring smooth,
+        structured reconstructions, which is beneficial for inverse problems.
+      </li>
+      <li>
+        <strong>Unified framework.</strong> The same INR backbone can be used for tasks like reconstruction, denoising,
+        inpainting, and 3D field modeling by simply changing the loss and observation model.
       </li>
     </ul>
     <p>
-      Parameters are constrained to stable ranges via a sigmoid-based projection:
+      However, the behavior of an INR is strongly influenced by its <em>activation function</em>, which controls how
+      frequencies propagate and interact across layers.
     </p>
-    <pre class="bandrc-code">
-θ = a + (b − a) · sigmoid(θ̂),  where θ ∈ {T, ζ}</pre>
-    <p>
-      This removes manual tuning, keeps BandRC parameters within meaningful bounds, and makes the INR
-      <strong>signal-adaptive</strong>.
-    </p>
-
-    <h3>2.3 Spectral Bias & Chebyshev Analysis</h3>
-    <p>
-      Using harmonic distortion and Chebyshev polynomial analyses, BandRC is shown to maintain stronger,
-      more stable coefficients over a wider range of polynomial degrees than sinusoidal or Gaussian nonlinearities,
-      implying better <strong>high-frequency support</strong>.
-    </p>
-    <ul>
-      <li>
-        Chebyshev expansions on <em>[-5, 5]</em> show Raised Cosine coefficients stay significant up to ~20 orders,
-        while Sine and Gaussian decay much faster.
-      </li>
-      <li>
-        Chirp-image experiments confirm lower spectral error across frequencies and stronger high-frequency energy in
-        deeper layers compared to SIREN.
-      </li>
-    </ul>
   </section>
 
+  <!-- 3. Activations in INRs -->
+  <section id="activations" class="bandrc-section">
+    <h2>3. Activations Play a Major Role in INRs</h2>
+    <p>
+      The activation function used in the MLP is central to the <strong>spectral behavior</strong> of an INR. When a
+      coordinate input passes through nonlinear layers, harmonic distortion generates new frequency components,
+      effectively “pushing” energy toward higher frequencies (often referred to as a <em>blueshift</em>).
+    </p>
+    <p>
+      Different activations induce different spectral profiles:
+    </p>
+    <ul>
+      <li>
+        <strong>ReLU + positional encoding:</strong> relies on explicit high-frequency encodings; the MLP itself is
+        relatively low-frequency.
+      </li>
+      <li>
+        <strong>Sinusoidal activations (e.g. SIREN):</strong> naturally support higher frequencies but may suffer from
+        optimization instabilities and sensitivity to initialization.
+      </li>
+      <li>
+        <strong>Gaussian / windowed activations:</strong> can localize frequency content but may attenuate higher
+        orders too quickly.
+      </li>
+    </ul>
+    <p>
+      Understanding how an activation distributes spectral energy across polynomial bases (e.g. Chebyshev polynomials)
+      offers a principled way to design INRs that are both expressive and stable.
+    </p>
+  </section>
+
+  <!-- 4. Our contribution -->
+  <section id="contribution" class="bandrc-section">
+    <h2>4. Our Contribution</h2>
+    <p>
+      We study INRs through the lens of activation-induced spectra and propose an activation based on a
+      <strong>band-shifted raised cosine filter</strong>, combined with a task-adaptive parameterization. Our main
+      contributions are:
+    </p>
+    <ul>
+      <li>
+        A <strong>Chebyshev-based analysis</strong> for dissecting the spectral loading of INR activations.
+      </li>
+      <li>
+        A <strong>band-limited, frequency-shifted activation</strong> with learnable bandwidth and shift, derived from
+        a raised cosine filter.
+      </li>
+      <li>
+        A <strong>network architecture</strong> that conditions activation parameters on input-specific prior knowledge,
+        leading to faster convergence and better reconstructions across tasks.
+      </li>
+    </ul>
+
+    <h3>4.1 Dissecting Spectral Properties of INR Activations</h3>
+    <p>
+      We employ <strong>Chebyshev polynomial analysis</strong> to examine how different activations load energy into
+      various spectral orders:
+    </p>
+    <ul>
+      <li>
+        Expand each activation in a Chebyshev basis over a chosen interval and inspect the magnitude of coefficients
+        across orders.
+      </li>
+      <li>
+        Compare raised cosine, sinusoidal, and Gaussian nonlinearities in terms of how long they maintain
+        non-negligible coefficients.
+      </li>
+      <li>
+        Use chirp-image experiments to observe how energy spreads across frequencies and layers in practical INR
+        training.
+      </li>
+    </ul>
+    <p>
+      The analysis shows that a raised-cosine-based activation maintains stronger coefficients over a larger range of
+      orders and yields more balanced high-frequency loading than purely sinusoidal or Gaussian activations.
+    </p>
+
+    <h3>4.2 Modifying the Network for Faster Convergence</h3>
+    <p>
+      Building on these findings, we design an INR architecture where the activation parameters are
+      <strong>input-adaptive</strong>:
+    </p>
+    <ul>
+      <li>
+        A truncated ResNet encoder (2D or 3D, depending on the task) extracts <em>prior knowledge</em> from the input
+        signal.
+      </li>
+      <li>
+        A small harmonizer network transforms this latent representation into activation parameters (e.g., bandwidth
+        <em>T</em> and shift <em>ζ</em>).
+      </li>
+      <li>
+        Parameters are constrained through a sigmoid projection to stay within stable, meaningful bounds.
+      </li>
+    </ul>
+    <p>
+      This modification improves convergence speed and stability, and consistently boosts reconstruction quality over
+      static-parameter baselines.
+    </p>
+
+    <!-- Placeholder: architecture diagram -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/inr_architecture.png' | relative_url }}"
+        alt="Overall INR architecture with prior encoder, harmonizer, and coordinate MLP"
+      />
+      <p class="bandrc-figcaption">
+        Figure: INR architecture with prior-knowledge encoder, harmonizer for activation parameters, and the main
+        coordinate-based MLP.
+      </p>
+    </div>
+  </section>
+
+  <!-- 5. Results -->
   <section id="results" class="bandrc-section">
-    <h2>3. Experiments &amp; Results</h2>
+    <h2>5. Results</h2>
 
-    <h3>3.1 Image Reconstruction (Kodak)</h3>
+    <h3>5.1 Image Reconstruction (Kodak)</h3>
+    <p>
+      We evaluate on the Kodak dataset (24 lossless images) by representing each image as a continuous INR and
+      measuring reconstruction quality:
+    </p>
     <ul>
       <li>
-        Dataset: Kodak 24 lossless images, native resolution.
+        Our activation achieves an average PSNR of <strong>41.24 dB</strong>, compared to <strong>35.57 dB</strong>
+        for INCODE, and lower scores for ReLU+PE, SIREN, and WIRE.
       </li>
       <li>
-        Average PSNR: <strong>BandRC 41.24 dB</strong> vs. <strong>INCODE 35.57 dB</strong>, ReLU+PE 32.79 dB,
-        SIREN 33.09 dB, WIRE 29.41 dB.
-      </li>
-      <li>
-        On Kodak image 20, BandRC improves over INCODE by +8.93 dB and over WIRE / SIREN by more than +12 dB,
-        while converging faster and more stably.
+        On challenging images, the gain over prior work can exceed <strong>+8 dB</strong>.
       </li>
     </ul>
 
     <!-- Placeholder: Kodak reconstruction comparison -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/bandrc_kodak_recon.png' | relative_url }}"
-        alt="BandRC compared to ReLU+PE, SIREN, WIRE, and INCODE on Kodak image 20"
+        src="{{ '/images/kodak_reconstruction.png' | relative_url }}"
+        alt="INR reconstruction comparison on Kodak images"
       />
       <p class="bandrc-figcaption">
-        Figure: Qualitative comparison on Kodak image 20 – BandRC vs. existing INR activations.
+        Figure: Qualitative reconstruction on Kodak – our INR activation vs. existing baselines.
       </p>
     </div>
 
-    <h3>3.2 Image Denoising (DIV2K)</h3>
+    <!-- Placeholder: radial plot -->
+    <div class="bandrc-figure">
+      <img
+        src="{{ '/images/kodak_radial_plot.png' | relative_url }}"
+        alt="Radial error / spectrum plot for INR reconstructions on Kodak"
+      />
+      <p class="bandrc-figcaption">
+        Figure: Radial profile / spectrum plot on Kodak showing improved high-frequency fidelity.
+      </p>
+    </div>
+
+    <h3>5.2 Image Denoising (DIV2K)</h3>
+    <p>
+      For denoising, the INR is used as a deep image prior under a physically motivated noise model:
+    </p>
     <ul>
-      <li>Noise model: photon noise (Poisson, mean count 30) + readout noise (std = 2).</li>
+      <li>Photon noise (Poisson, mean count 30) combined with Gaussian readout noise (standard deviation 2).</li>
       <li>
-        BandRC achieves a <strong>+0.46 dB</strong> PSNR gain over INCODE, with better color preservation and structural
-        integrity in reconstructions.
+        Our method improves PSNR by about <strong>+0.46 dB</strong> over INCODE, with better structural preservation
+        and reduced color artifacts.
       </li>
     </ul>
 
     <!-- Placeholder: denoising visual -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/bandrc_denoising.png' | relative_url }}"
-        alt="Denoising examples on DIV2K with BandRC and baselines"
+        src="{{ '/images/denoising_results.png' | relative_url }}"
+        alt="Denoising examples on DIV2K using INR prior"
       />
       <p class="bandrc-figcaption">
-        Figure: Denoising on DIV2K – BandRC vs. baselines under photon + readout noise.
+        Figure: Denoising on DIV2K – INR with band-shifted raised cosine vs. other INR activations.
       </p>
     </div>
 
-    <h3>3.3 Single-Image Super-Resolution</h3>
-    <p>On DIV2K, BandRC is evaluated at 2×, 4×, and 6× super-resolution:</p>
+    <h3>5.3 Single-Image Super-Resolution</h3>
+    <p>
+      We test 2×, 4×, and 6× super-resolution on DIV2K by training the INR on low-resolution observations and
+      querying it at higher-resolution grids:
+    </p>
     <table class="bandrc-table">
       <thead>
         <tr>
@@ -166,106 +274,81 @@ collection: projects
         </tr>
       </thead>
       <tbody>
-        <tr><td>ReLU+PE</td><td>32.80</td><td>28.89</td><td>26.29</td></tr>
+        <tr><td>ReLU + PE</td><td>32.80</td><td>28.89</td><td>26.29</td></tr>
         <tr><td>SIREN</td><td>32.26</td><td>29.62</td><td>27.31</td></tr>
         <tr><td>WIRE</td><td>29.02</td><td>27.16</td><td>25.35</td></tr>
         <tr><td>INCODE</td><td>32.83</td><td>29.96</td><td>26.63</td></tr>
-        <tr><td><strong>BandRC</strong></td><td><strong>34.03</strong></td><td><strong>30.42</strong></td><td><strong>27.66</strong></td></tr>
+        <tr><td><strong>Band-shifted RC INR</strong></td><td><strong>34.03</strong></td><td><strong>30.42</strong></td><td><strong>27.66</strong></td></tr>
       </tbody>
     </table>
     <p>
-      Qualitatively, BandRC produces sharper details (e.g., butterfly wings) and cleaner backgrounds, especially in
-      the challenging 6× setting.
+      Qualitatively, the INR with our activation reconstructs sharper edges and fine details (e.g., textures and thin
+      structures) with fewer ringing artifacts, especially at 6×.
     </p>
 
     <!-- Placeholder: SR visual -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/bandrc_sr_results.png' | relative_url }}"
-        alt="Super-resolution examples for 2×, 4×, and 6× with BandRC"
+        src="{{ '/images/sr_results.png' | relative_url }}"
+        alt="Single-image super-resolution results using INR"
       />
       <p class="bandrc-figcaption">
-        Figure: Super-resolution results for 2×, 4×, and 6× – BandRC retains high-frequency details better than baselines.
+        Figure: Super-resolution examples at 2×, 4×, and 6× – our INR activation recovers high-frequency content more
+        faithfully.
       </p>
     </div>
 
-    <h3>3.4 Inpainting &amp; 3D Occupancy Fields</h3>
-    <ul>
-      <li>
-        <strong>Inpainting:</strong> Celtic spiral knots image (572×582), with only 20% pixels observed.
-        BandRC reconstructs continuous knot structures with higher PSNR and competitive SSIM, capturing sparse
-        patterns more reliably than SIREN, WIRE, and INCODE.
-      </li>
-      <li>
-        <strong>Occupancy fields:</strong> Thai statue on a 512³ grid.
-        BandRC attains IOU = <strong>0.992</strong>, slightly surpassing INCODE (0.991) and clearly outperforming ReLU+PE,
-        SIREN, and WIRE.
-      </li>
-    </ul>
-
-    <!-- Placeholder: Inpainting visual -->
-    <div class="bandrc-figure">
-      <img
-        src="{{ '/images/bandrc_inpainting.png' | relative_url }}"
-        alt="Inpainting of Celtic spiral knots using BandRC and baselines"
-      />
-      <p class="bandrc-figcaption">
-        Figure: Inpainting of Celtic spiral knots with 20% pixels observed – BandRC recovers continuous structures.
-      </p>
-    </div>
-
-    <!-- Placeholder: 3D occupancy visual -->
-    <div class="bandrc-figure">
-      <img
-        src="{{ '/images/bandrc_occupancy.png' | relative_url }}"
-        alt="3D occupancy reconstruction for Thai statue using BandRC"
-      />
-      <p class="bandrc-figcaption">
-        Figure: 3D occupancy reconstruction of the Thai statue – BandRC produces clean, high-IOU surfaces.
-      </p>
-    </div>
-  </section>
-
-  <section id="architecture" class="bandrc-section">
-    <h2>4. Architecture &amp; Training</h2>
-    <ul>
-      <li>
-        Default INR: 5-layer MLP, 256 neurons per hidden layer, BandRC activations on 4 hidden layers, optional sigmoid
-        on the output depending on the task.
-      </li>
-      <li>
-        Optimization: Adam; learning rate tuned per task (e.g., 0.01 for 2D reconstruction, smaller for deeper / larger
-        models).
-      </li>
-      <li>
-        Hardware: experiments run on NVIDIA Quadro GV100 (32 GB) using PyTorch.
-      </li>
-    </ul>
+    <h3>5.4 Inpainting</h3>
     <p>
-      A width–depth ablation (Kodak image 22) shows PSNR rising with capacity, up to ~52 dB for width = 512, depth = 4
-      (1000 epochs). A practical configuration with width = 256, depth = 3 still reaches ~39.6 dB while being more
-      efficient.
+      For inpainting, only a subset of pixels is observed and the INR is optimized to match them while implicitly
+      filling missing regions:
     </p>
+    <ul>
+      <li>
+        On a Celtic spiral knots image (572×582) with 20% pixel visibility, our INR more reliably recovers continuous
+        knot structures and fine curves.
+      </li>
+      <li>
+        PSNR and SSIM are competitive or superior to existing INR activations, particularly on sparsely observed
+        patterns.
+      </li>
+    </ul>
 
-    <!-- Placeholder: architecture diagram -->
+    <!-- Placeholder: inpainting visual -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/bandrc_architecture.png' | relative_url }}"
-        alt="Overall BandRC architecture: prior encoder, harmonizer, and INR MLP"
+        src="{{ '/images/inpainting_results.png' | relative_url }}"
+        alt="Inpainting results using INR on Celtic spiral knots"
       />
       <p class="bandrc-figcaption">
-        Figure: BandRC architecture – prior-knowledge encoder, harmonizer for T and ζ, and the main INR network.
+        Figure: Inpainting with 20% observations – INR with band-shifted raised cosine reconstructs sparse, structured
+        patterns.
       </p>
     </div>
 
-    <!-- Placeholder: width–depth ablation plot -->
+    <h3>Other Results</h3>
+    <p>
+      Beyond 2D imaging tasks, the same INR design extends to 3D fields:
+    </p>
+    <ul>
+      <li>
+        <strong>3D occupancy fields:</strong> reconstruct volumetric shapes (e.g., a statue on a 512³ grid) with high
+        IOU and clean surfaces.
+      </li>
+      <li>
+        <strong>Ablations:</strong> width–depth experiments show a clear trade-off between capacity and PSNR, with our
+        activation benefiting more from increased model capacity than baselines.
+      </li>
+    </ul>
+
+    <!-- Placeholder: occupancy / other results visual -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/bandrc_ablation.png' | relative_url }}"
-        alt="Width–depth ablation plot for BandRC on Kodak image 22"
+        src="{{ '/images/other_results.png' | relative_url }}"
+        alt="3D occupancy and ablation results for INR"
       />
       <p class="bandrc-figcaption">
-        Figure: Width–depth ablation on Kodak image 22 – PSNR vs. model capacity for BandRC.
+        Figure: 3D occupancy reconstruction and width–depth ablations demonstrating the scalability of the proposed INR.
       </p>
     </div>
   </section>
@@ -273,12 +356,13 @@ collection: projects
   <section id="resources" class="bandrc-section">
     <!-- 6. RESOURCES -->
     <h2>6. Resources</h2>
-    <!-- You can add list items here as needed, but keep the heading and comment unchanged -->
   </section>
 
   <section id="bibtex" class="bandrc-section">
     <h2>7. BibTeX</h2>
-    <p>Update the metadata once the final venue and details are fixed:</p>
+    <p>
+      If you find this work useful, please cite the BandRC paper:
+    </p>
     <pre class="bandrc-code">
 @article{thennakoon2025bandrc,
   title   = {BandRC: Band Shifted Raised Cosine Activated Implicit Neural Representations},
@@ -353,7 +437,8 @@ collection: projects
   }
 
   .bandrc-code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
     font-size: 0.85rem;
     padding: 0.6rem 0.75rem;
     margin: 0.35rem 0 0.6rem 0;
