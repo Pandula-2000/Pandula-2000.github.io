@@ -6,25 +6,25 @@ collection: projects
 
 <div class="bandrc-page">
   <header class="bandrc-header">
-    <h1>Implicit Neural Representations &amp; Band-Shifted Raised Cosine Activations</h1>
-
-    <p class="bandrc-subtitle">
-      Understanding implicit neural representations (INRs), the role of activations in their spectral behavior, and our
-      contribution based on a band-shifted raised cosine activation with task-adaptive parameters.
+    <h4>Team</h1>
+    <p class="bandrc-team">
+      Pandula Thennakoon · Avishka Ranasinghe · Mario De Silva · Buwaneka Epakanda ·
     </p>
 
-    <p class="bandrc-authors">
-      Pandula Thennakoon · Avishka Ranasinghe · Mario De Silva · Buwaneka Epakanda ·
+    <h4>Supervisors</h1>
+    <p class="bandrc-PIs">
       Roshan Godaliyadda · Parakrama Ekanayake · Vijitha Herath
     </p>
 
     <div class="bandrc-links">
       <!-- Update these links to the real URLs -->
-      <a href="#" target="_blank" rel="noreferrer">Paper (arXiv)</a>
-      <a href="#" target="_blank" rel="noreferrer">Code</a>
+      <a href="#resources" >Publications</a>
+      <a href="#" target="_blank" rel="noreferrer">Code-Available Soon!</a>
       <a href="#bibtex">Cite</a>
     </div>
   </header>
+
+
 
   <!-- 1. What is an INR? -->
   <section id="what-is-inr" class="bandrc-section">
@@ -48,6 +48,11 @@ collection: projects
       Concretely, an INR is usually implemented as a multi-layer perceptron (MLP) with a chosen activation function,
       trained to minimize the reconstruction error between predicted and ground-truth signal values at sampled
       coordinates.
+    </p>
+
+
+    <p>
+      We are interested in understanding implicit neural representations (INRs) with a mathemathical rigour by analyzing the role of activations in their spectral domain.
     </p>
   </section>
 
@@ -185,7 +190,7 @@ collection: projects
     <!-- Placeholder: architecture diagram -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/inr_architecture.png' | relative_url }}"
+        src= '/images/INR/model.png'
         alt="Overall INR architecture with prior encoder, harmonizer, and coordinate MLP"
       />
       <p class="bandrc-figcaption">
@@ -217,7 +222,7 @@ collection: projects
     <!-- Placeholder: Kodak reconstruction comparison -->
     <div class="bandrc-figure">
       <img
-        src="{{ '/images/kodak_reconstruction.png' | relative_url }}"
+        src='/images/INR/Img_rec.png'
         alt="INR reconstruction comparison on Kodak images"
       />
       <p class="bandrc-figcaption">
