@@ -1,14 +1,13 @@
 ---
-title: "Paper Title Number 1"
+title: "AVSim-Realistic Simulation Framework for Airborne and Vector-Borne Disease Dynamics"
 collection: publications
 category: manuscripts
 permalink: /publication/2009-10-01-paper-title-number-1
 excerpt: 'This paper is about the number 1. The number 2 is left for future work.'
 date: 2009-10-01
-venue: 'Journal 1'
-slidesurl: 'https://academicpages.github.io/files/slides1.pdf'
-paperurl: 'https://academicpages.github.io/files/paper1.pdf'
-bibtexurl: 'https://academicpages.github.io/files/bibtex1.bib'
-citation: 'Your Name, You. (2009). &quot;Paper Title Number 1.&quot; <i>Journal 1</i>. 1(1).'
+venue: 'Arxiv'
+paperurl: 'https://arxiv.org/abs/2502.06212'
+# citation: 'Your Name, You. (2009). &quot;Paper Title Number 1.&quot; <i>Journal 1</i>. 1(1).'
 ---
-The contents above will be part of a list of publications, if the user clicks the link for the publication than the contents of section will be rendered as a full page, allowing you to provide more information about the paper for the reader. When publications are displayed as a single page, the contents of the above "citation" field will automatically be included below this section in a smaller font.
+
+Computational disease modeling plays a crucial role in understanding and controlling the transmission of infectious diseases. While agent-based models (ABMs) provide detailed insights into individual dynamics, accurately replicating human motion remains challenging due to its complex, multi-factorial nature. Most existing frameworks fail to model realistic human motion, leading to oversimplified and less realistic behavior modeling. Furthermore, many current models rely on synthetic assumptions and fail to account for realistic environmental structures, transportation systems, and behavioral heterogeneity across occupation groups. To address these limitations, we introduce AVSim, an agent-based simulation framework designed to model airborne and vector-borne disease dynamics under realistic conditions. A distinguishing feature of AVSim is its ability to accurately model the dual nature of human mobility (both the destinations individuals visit and the duration of their stay) by utilizing GPS traces from real-world participants, characterized by occupation. This enables a significantly more granular and realistic representation of human movement compared to existing approaches. Furthermore, spectral clustering combined with graph-theoretic analysis is used to uncover latent behavioral patterns within occupations, enabling fine-grained modeling of agent behavior. We validate the synthetic human mobility patterns against ground-truth GPS data and demonstrate AVSim's capabilities via simulations of COVID-19 and dengue. The results highlight AVSim's capacity to trace infection pathways, identify high-risk zones, and evaluate interventions such as vaccination, quarantine, and vector control with occupational and geographic specificity.
