@@ -4,7 +4,7 @@ collection: publications
 category: conferences
 permalink: /publication/2025-BandRC
 excerpt: 'Accepted at ICIIS 2025'
-date: 2025
+date: 2025-12-30
 venue: 'ICIIS'
 # paperurl: ''
 
