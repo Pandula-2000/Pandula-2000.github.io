@@ -1,51 +1,36 @@
 ---
-layout: page
+layout: archive
 title: "Publications"
 permalink: /publications/
 author_profile: true
 ---
 
 {% if site.author.googlescholar %}
-  <div class="wordwrap">
-    You can also find my articles on
-    <a href="{{ site.author.googlescholar }}">my Google Scholar profile</a>.
-  </div>
+  <div class="wordwrap">You can also find my articles on <a href="{{site.author.googlescholar}}">my Google Scholar profile</a>.</div>
 {% endif %}
 
-{% assign pubs = site.publications | sort: 'year' | reverse %}
+{% include base_path %}
 
-<ul class="pub-list">
-  {% for pub in pubs %}
-    <li class="pub-item">
-      <div class="pub-main">
-        <span class="pub-title">{{ pub.title }}</span>
-        {% if pub.year %}
-          <span class="pub-year">({{ pub.year }})</span>
-        {% endif %}
-      </div>
-
-      {% if pub.authors %}
-        <div class="pub-authors">{{ pub.authors }}</div>
+<!-- New style rendering if publication categories are defined -->
+{% if site.publication_category %}
+  {% for category in site.publication_category  %}
+    {% assign title_shown = false %}
+    {% for post in site.publications reversed %}
+      {% if post.category != category[0] %}
+        {% continue %}
       {% endif %}
-
-      {% if pub.venue %}
-        <div class="pub-venue">{{ pub.venue }}</div>
-      {% endif %}
-
-      <div class="pub-links">
-        {% if pub.paperurl %}
-          <a href="{{ pub.paperurl }}" target="_blank" rel="noreferrer">PDF</a>
-        {% endif %}
-        {% if pub.arxiv %}
-          <a href="{{ pub.arxiv }}" target="_blank" rel="noreferrer">arXiv</a>
-        {% endif %}
-        {% if pub.doi %}
-          <a href="https://doi.org/{{ pub.doi }}" target="_blank" rel="noreferrer">DOI</a>
-        {% endif %}
-        {% if pub.codeurl %}
-          <a href="{{ pub.codeurl }}" target="_blank" rel="noreferrer">Code</a>
-        {% endif %}
-      </div>
-    </li>
+      {% unless title_shown %}
+        <h2>{{ category[1].title }}</h2><hr />
+        {% assign title_shown = true %}
+      {% endunless %}
+      {% include archive-single.html %}
+    {% endfor %}
   {% endfor %}
-</ul>
+{% else %}
+  {% for post in site.publications reversed %}
+    {% include archive-single.html %}
+  {% endfor %}
+{% endif %}
+
+
+
