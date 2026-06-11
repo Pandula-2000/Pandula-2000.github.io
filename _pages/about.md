@@ -27,9 +27,9 @@ My research focuses on developing intelligent computational models that bridge *
 
 ## 📰 News
 
-- 📄 **First-Author Paper Accepted at ICLE 2026**  
-  Our paper titled *"COSMO-INR"* has been accepted to the prestigious AI international conference, ICLE 2026.
-
+- 📄 **First-Author Paper Accepted at ICLR 2026**  
+  Our paper titled *"COSMO-INR: Complex Sinusoidal Modulation for Implicit Neural Representations"* has been accepted to the prestigious AI international conference, ICLR 2026.
+  
 - 💻 **Research Assistant for NVIDIA Academic Grant (2025 october)**  
   Recruited as one of the Research Assistants for the *Heritage-AI* project, under the supervision of **Prof. Roshan Godaliyadda** at the **Multidisciplinary AI Research Center (MARC)**, University of Peradeniya.
 
