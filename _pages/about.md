@@ -56,7 +56,7 @@ My research focuses on developing intelligent computational models that bridge *
 ## 📫 Contact
 
 - **GitHub:** <a href="https://github.com/Pandula-2000" target="_blank" rel="noopener noreferrer"><strong>Pandula-2000</strong></a>  
-- **LinkedIn:** <a href="https://linkedin.com/in/pandula-thennakoon" target="_blank" rel="noopener noreferrer"><strong>linkedin.com/in/pandula-thennakoon</strong></a>  
+- **LinkedIn:** <a href="https://www.linkedin.com/in/pandula-thennakoon-3a8533311/" target="_blank" rel="noopener noreferrer"><strong>linkedin.com/in/pandula-thennakoon-3a8533311</strong></a>  
 - **Email:** <a href="mailto:pandula66@gmail.com"><strong>pandula66@gmail.com</strong></a>  
 
 ---
