@@ -12,7 +12,7 @@ redirect_from:
 I am **Pandula Thennakoon**, a researcher in **Electrical and Electronic Engineering** with a strong background in **signal processing, artificial intelligence, and machine learning**.  
 My research focuses on developing intelligent computational models that bridge **theoretical signal representation** with **modern deep learning** techniques — particularly in the areas of **implicit neural representations (INRs)** and **agent-based modeling of complex systems**.
 
-I am currently applying for **PhD programs** in Electrical and Electronic Engineering, aiming to advance the frontier of intelligent systems for **signal understanding, modeling, and synthesis** across both physical and social domains.
+<!-- I am currently applying for **PhD programs** in Electrical and Electronic Engineering, aiming to advance the frontier of intelligent systems for **signal understanding, modeling, and synthesis** across both physical and social domains. -->
 
 ---
 
@@ -30,8 +30,8 @@ I am currently applying for **PhD programs** in Electrical and Electronic Engine
 - 📄 **First-Author Paper Accepted at ICLE 2026**  
   Our paper titled *"COSMO-INR"* has been accepted to the prestigious AI international conference, ICLE 2026.
 
-- 💻 **NVIDIA Academic Grant (2025 october)**  
-  Secured the grant to support research on *Implicit Neural Representations* at the **Multidisciplinary AI Research Center (MARC)**, University of Peradeniya.
+- 💻 **Research Assistant for NVIDIA Academic Grant (2025 october)**  
+  Recruited as one of the Research Assistants for the *Heritage-AI* project, under the supervision of **Prof. Roshan Godaliyadda** at the **Multidisciplinary AI Research Center (MARC)**, University of Peradeniya.
 
 - 🎓 **W. M. G. Fernando Prize (2025)**  
   Received for outstanding performance in *Electronic Communications* at the **General Convocation**, University of Peradeniya.
