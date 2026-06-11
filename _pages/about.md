@@ -27,6 +27,9 @@ I am currently applying for **PhD programs** in Electrical and Electronic Engine
 
 ## 📰 News
 
+- 📄 **First-Author Paper Accepted at ICLE 2026**  
+  Our paper titled *"COSMO-INR"* has been accepted to the prestigious AI international conference, ICLE 2026.
+
 - 💻 **NVIDIA Academic Grant (2025 october)**  
   Secured the grant to support research on *Implicit Neural Representations* at the **Multidisciplinary AI Research Center (MARC)**, University of Peradeniya.
 
